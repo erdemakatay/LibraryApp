@@ -29,10 +29,15 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     authViewModel
                     )}
 
-     //  ÖDEV 1: Kayıt ol'a success yapısı kurulacak. Kayıt olduğunda başarılı olduğunda nasıl olduğu size kalmış ister logine yönlendir , istersen supabasede kayıt olduğunda giriş yapmış sayılsın o bize kalmış hangisini istersen
+     //  ÖDEV 1: Kayıt ol'a success yapısı kuruldu. Kayıt olduğunda başarılı olduğunda  logine yönlendirdi.
 
         composable(Screen.Register.route) { RegisterScreen(
                     onNavigateToLogin = {navController.navigate(Screen.Login.route)},
+                    onRegisterSuccess = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Register.route) { inclusive = true}
+                        }
+                    },
                     authViewModel
                 )}
 

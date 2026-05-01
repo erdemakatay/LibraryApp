@@ -37,6 +37,7 @@ import com.turkcell.libraryapp.ui.viewmodel.AuthViewModel
 @Composable
 fun RegisterScreen(
     onNavigateToLogin:() -> Unit,
+    onRegisterSuccess: () -> Unit,
     authViewModel: AuthViewModel
 ) {
     val authState by authViewModel.authState.collectAsState()
@@ -44,6 +45,14 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     var fullName by remember { mutableStateOf("") }
     var studentNo by remember { mutableStateOf("") }
+
+    // Kayıt başarılı olduğunda Login'e yönlendiren kodum.
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Success) {
+            authViewModel.resetState()
+            onRegisterSuccess()
+        }
+    }
 
 
     Column(

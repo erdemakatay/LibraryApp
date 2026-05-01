@@ -20,6 +20,8 @@ sealed class AuthState {
 }
 
 
+
+
 class AuthViewModel : ViewModel()
 {
     private val repository = AuthRepository()
@@ -55,8 +57,6 @@ class AuthViewModel : ViewModel()
         }
     }
 
-
-
     fun signUp(
         email: String,
         password: String,
@@ -71,7 +71,6 @@ class AuthViewModel : ViewModel()
                 .onFailure { ex -> _authState.value = AuthState.Error(ex.message ?: "Kayıt Başarısız") }
         }
     }
-
     fun resetState() {
         _authState.value = AuthState.Idle;
     }

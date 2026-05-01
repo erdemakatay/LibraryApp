@@ -1,5 +1,6 @@
 package com.turkcell.libraryapp.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -35,4 +36,48 @@ class BookViewModel : ViewModel() {
                 _isLoading.value =false
         }
     }
+
+    fun updateBook(book: Book) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            repository.updateBook(book)
+                .onSuccess {
+                    Log.d("BookViewModel", "Güncelleme başarılı, liste yenileniyor")
+                    loadBooks()
+                }
+                .onFailure {
+                    Log.e("BookViewModel", "Güncelleme hatası: ${it.message}")
+                    _error.value = it.message
+                }
+            _isLoading.value = false
+        }
+    }
+    fun deleteBook(id: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            repository.deleteBook(id)
+                .onSuccess {
+                    Log.d("BookViewModel", "Silme başarılı, liste güncelleniyor...")
+                    loadBooks()
+                }
+                .onFailure {
+                    Log.e("BookViewModel", "Silme hatası: ${it.message}")
+                    _error.value = it.message
+                }
+            _isLoading.value = false
+        }
+    }
+
+    fun searchBooks(query: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            repository.searchBooks(query)
+                .onSuccess { _books.value = it }
+                .onFailure { _error.value = it.message }
+            _isLoading.value = false
+        }
+    }
+
 }
+
+
