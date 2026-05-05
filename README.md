@@ -5,13 +5,13 @@ Bu proje, modern Android geliştirme teknikleri kullanılarak hazırlanmış bir
 ## 📱 Uygulama İçi Ekran Görüntüleri
 
 <p align="center">
-  <img src="https://github.com/user-attachments//assets/2d1ffd29-02cc-45ab-9a2e-90bc8cc8cdb3" width="20%" alt=">Giriş Ekranı" />
-  <img src="https://github.com/user-attachments/assets/8965b318-dd7b-45ee-87c1-0d6d48411e03" width="20%" alt="Kayıt Ol  Ekranı" />
-  <img src="https://github.com/user-attachments/assets/6d6f6685-d927-4db5-91ee-470eb27e31b2" width="20%"" alt="Kitaplarım Ekranı " />
-  <img src="https://github.com/user-attachments/assets/6e49a51e-47e3-403d-890d-c3ece8975d29" width="20%"" alt="Kitapları Düzenle Ekranı " />
-  <img src="https://github.com/user-attachments/assets/f3353a44-c20b-4da9-b63b-ca9cc3674153" width="20%"" alt="Kitapların Düzenlendikten Sonraki Ekran " />
-  <img src="https://github.com/user-attachments/assets/48beee0d-5e40-4e8f-8ad9-ef7deefe6766" width="20%"" alt="Ödünç Al Ekranı " />
-  <img src="https://github.com/user-attachments/assets/8e6f7475-dba8-410d-8043-09758c043717" width="20%"" alt="Kiralamalarım Ekranı " />
+  <img src="https://github.com/user-attachments/assets/2d1ffd29-02cc-45ab-9a2e-90bc8cc8cdb3" width="20%" alt="Giriş Ekranı" />
+  <img src="https://github.com/user-attachments/assets/8965b318-dd7b-45ee-87c1-0d6d48411e03" width="20%" alt="Kayıt Ol Ekranı" />
+  <img src="https://github.com/user-attachments/assets/6d6f6685-d927-4db5-91ee-470eb27e31b2" width="20%" alt="Kitaplarım Ekranı" />
+  <img src="https://github.com/user-attachments/assets/6e49a51e-47e3-403d-890d-c3ece8975d29" width="20%" alt="Kitapları Düzenle Ekranı" />
+  <img src="https://github.com/user-attachments/assets/f3353a44-c20b-4da9-b63b-ca9cc3674153" width="20%" alt="Kitapların Düzenlendikten Sonraki Ekran" />
+  <img src="https://github.com/user-attachments/assets/48beee0d-5e40-4e8f-8ad9-ef7deefe6766" width="20%" alt="Ödünç Al Ekranı" />
+  <img src="https://github.com/user-attachments/assets/8e6f7475-dba8-410d-8043-09758c043717" width="20%" alt="Kiralamalarım Ekranı" />
 </p>
 
 ## 🛠 Kullanılan Teknolojiler ve Mimari
