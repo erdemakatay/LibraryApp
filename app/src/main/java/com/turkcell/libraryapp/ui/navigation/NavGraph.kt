@@ -6,9 +6,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.turkcell.libraryapp.ui.screen.BorrowingsScreen
 import com.turkcell.libraryapp.ui.screen.HomeScreen
 import com.turkcell.libraryapp.ui.screen.LoginScreen
 import com.turkcell.libraryapp.ui.screen.RegisterScreen
+import com.turkcell.libraryapp.ui.screen.SplashScreen
 import com.turkcell.libraryapp.ui.viewmodel.AuthViewModel
 import com.turkcell.libraryapp.ui.viewmodel.BookViewModel
 
@@ -17,8 +19,22 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
     val authViewModel: AuthViewModel = viewModel()
     val bookViewModel : BookViewModel = viewModel()
 
-  NavHost(navController = navController, startDestination = Screen.Login.route)
+  NavHost(navController = navController, startDestination = Screen.Splash.route)
   {
+        composable(Screen.Splash.route) {SplashScreen(authViewModel,
+            onAuthenticated ={ role ->
+                navController.navigate(Screen.Homepage.route){
+                    popUpTo(Screen.Splash.route) {inclusive=true}
+                }
+            },
+            onUnauthenticated = {
+                navController.navigate(Screen.Login.route)
+                {
+                    popUpTo(Screen.Splash.route) {inclusive=true}
+                }
+            })
+        }
+
         composable(Screen.Login.route) { LoginScreen(
                 onNavigateToRegister = { navController.navigate(Screen.Register.route)},
                 onLoginSuccess = {role ->
@@ -29,7 +45,6 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                     authViewModel
                     )}
 
-     //  ÖDEV 1: Kayıt ol'a success yapısı kuruldu. Kayıt olduğunda başarılı olduğunda  logine yönlendirdi.
 
         composable(Screen.Register.route) { RegisterScreen(
                     onNavigateToLogin = {navController.navigate(Screen.Login.route)},
@@ -42,8 +57,12 @@ fun NavGraph(navController: NavHostController = rememberNavController()) {
                 )}
 
        composable(Screen.Homepage.route){
-           HomeScreen(authViewModel, bookViewModel)
+           HomeScreen(authViewModel, bookViewModel,navController)
        }
+
+      composable(Screen.Borrowings.route) {
+          BorrowingsScreen(bookViewModel)
+      }
   }
   }
 

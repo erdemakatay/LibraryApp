@@ -34,6 +34,10 @@ class AuthRepository {
        )
     }
 
+    suspend fun signOut() {
+        supabase.auth.signOut()
+    }
+
      fun  getCurrentUserId() : String?
     {
        return  supabase.auth.currentUserOrNull()?.id;

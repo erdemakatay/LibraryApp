@@ -1,6 +1,7 @@
 package com.turkcell.libraryapp.data.repository
 
 import com.turkcell.libraryapp.data.model.Book
+import com.turkcell.libraryapp.data.model.BorrowRecord
 import com.turkcell.libraryapp.data.supabase.supabase
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -12,7 +13,7 @@ class BookRepository {
             .decodeList<Book>()
     }
 
-    suspend fun getBookById(id: String): Result <Book> = runCatching {
+    suspend fun getBookById(id: String): Result<Book> = runCatching {
         supabase.postgrest["books"]
             .select { filter { eq("id", id) } }
             .decodeSingle<Book>()
@@ -38,7 +39,7 @@ class BookRepository {
     suspend fun deleteBook(id: String): Result<Unit> = runCatching {
         supabase.postgrest["books"]
             .delete {
-                filter { eq("id",id) }
+                filter { eq("id", id) }
             }
     }
 
@@ -48,9 +49,27 @@ class BookRepository {
         supabase.postgrest["books"]
             .select {
                 filter {
-                    ilike("title", "%$query%") }
+                    ilike("title", "%$query%")
+                }
             }
             .decodeList<Book>()
     }
 
+
+    // Ödünç Kayıt Oluşturma
+
+    suspend fun borrowBook(record: BorrowRecord): Result<Unit> = runCatching {
+        val book = getBookById(record.bookId).getOrThrow()
+        if (book.availableCopies <= 0) throw Exception("Stokta kitap kalmadı!")
+
+        supabase.postgrest["borrow_records"].insert(record)
+
+        updateBook(book.copy(availableCopies = book.availableCopies - 1)).getOrThrow()
+    }
+
+    suspend fun getBorrowings(userId: String): Result<List<BorrowRecord>> = runCatching {
+        supabase.postgrest["borrow_records"]
+            .select { filter { eq("student_id", userId) } }
+            .decodeList<BorrowRecord>()
+    }
 }

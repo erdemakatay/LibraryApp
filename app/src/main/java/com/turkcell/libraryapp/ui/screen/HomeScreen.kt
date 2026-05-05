@@ -5,6 +5,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,12 +23,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,7 +40,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.turkcell.libraryapp.data.model.Book
+import com.turkcell.libraryapp.ui.navigation.Screen
 import com.turkcell.libraryapp.ui.viewmodel.AuthViewModel
 import com.turkcell.libraryapp.ui.viewmodel.BookViewModel
 import kotlin.let
@@ -45,12 +50,17 @@ import kotlin.let
 @Composable
 fun HomeScreen(
     authViewModel: AuthViewModel,
-    bookViewModel: BookViewModel
+    bookViewModel: BookViewModel,
+    navController: NavController
 ) {
     val books by bookViewModel.books.collectAsState()
     val isLoading by bookViewModel.isLoading.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var editingBook by remember { mutableStateOf<Book?>(null) }
+    var borrowingBook by remember { mutableStateOf<Book?>(null) }
+    var selectedDays by remember { mutableIntStateOf(3) }
+
+
 
     var title by remember { mutableStateOf("") }
     var author by remember { mutableStateOf("") }
@@ -66,16 +76,26 @@ fun HomeScreen(
         }
     }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(20.dp)) {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        Text(
-            text = "Kitaplarım",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Kitaplarım",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
+            )
+            TextButton(onClick = { navController.navigate(Screen.Borrowings.route) }) {
+                Text("Kiralamalarım", color = Color(0xFF6750A4))
+            }
+        }
+
         OutlinedTextField(
             value = searchQuery,
             onValueChange = {
@@ -93,7 +113,7 @@ fun HomeScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(bottom = 16.dp),
             shape = CircleShape,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(
@@ -118,13 +138,14 @@ fun HomeScreen(
             )
             else -> LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                verticalArrangement = Arrangement.spacedBy(15.dp)
             ) {
                 items(books, key = { it.id }) { book ->
                     BookCard(
                         book = book,
                         onDelete = { bookViewModel.deleteBook(it) },
-                        onEdit = { editingBook = it }
+                        onEdit = { editingBook = it },
+                        onBorrow = { borrowingBook = it }
                     )
                 }
             }
@@ -171,7 +192,7 @@ fun HomeScreen(
                             title = title,
                             author = author,
                             category = category,
-                            pageCount = pageCount.toIntOrNull() ?: 0 // String -> Int dönüşümü
+                            pageCount = pageCount.toIntOrNull() ?: 0
                         )
                     )
                     editingBook = null
@@ -186,6 +207,48 @@ fun HomeScreen(
             }
         )
     }
+
+
+    borrowingBook?.let { book ->
+        AlertDialog(
+            onDismissRequest = { borrowingBook = null },
+            title = { Text("Ödünç Al") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text("Kitap: ${book.title}", fontWeight = FontWeight.Bold)
+                    Text("Kaç gün ödünç almak istiyorsunuz? (Maks. 5 gün)")
+                    Slider(
+                        value = selectedDays.toFloat(),
+                        onValueChange = { selectedDays = it.toInt() },
+                        valueRange = 1f..5f,
+                        steps = 3
+                    )
+                    Text(
+                        "Seçilen süre: $selectedDays gün",
+                        color = Color(0xFF6750A4),
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    bookViewModel.borrowBook(book, selectedDays)
+                    borrowingBook = null
+                }) {
+                    Text("Onayla")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { borrowingBook = null }) {
+                    Text("İptal")
+                }
+            }
+        )
+    }
 }
+
+
+
+
 
 
